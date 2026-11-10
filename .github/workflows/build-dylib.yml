@@ -1,0 +1,59 @@
+name: Build BiliBiliMDDylib
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "BiliBiliMDDylib/**"
+      - ".github/workflows/build-dylib.yml"
+
+jobs:
+  build:
+    runs-on: macos-14
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # MonkeyDev 的 md 工具是 x86_64，Apple Silicon runner 需要 Rosetta
+      - name: Install Rosetta
+        run: sudo softwareupdate --install-rosetta --agree-to-license || true
+
+      - name: Install theos
+        run: |
+          sudo git clone --recursive --depth 1 https://github.com/theos/theos.git /opt/theos
+          sudo chown -R "$USER":staff /opt/theos
+          ls /opt/theos/vendor/include | head
+
+      - name: Install MonkeyDev
+        run: |
+          git clone --depth 1 https://github.com/AloneMonkey/MonkeyDev.git /tmp/md
+          sudo mkdir -p /opt/MonkeyDev
+          sudo cp -R /tmp/md/. /opt/MonkeyDev/
+          sudo chmod -R +x /opt/MonkeyDev/bin /opt/MonkeyDev/Tools || true
+          file /opt/MonkeyDev/bin/md || true
+
+      - name: Build Dylib
+        env:
+          THEOS: /opt/theos
+        run: |
+          set -o pipefail
+          xcodebuild -project BiliBiliMD.xcodeproj \
+            -target BiliBiliMDDylib \
+            -configuration Release \
+            SYMROOT="$PWD/out" \
+            CONFIGURATION_BUILD_DIR="$PWD/out" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build 2>&1 | tee build.log
+
+      - name: Upload Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dylib
+          path: |
+            out/*.dylib
+            build.log
