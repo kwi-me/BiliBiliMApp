@@ -174,10 +174,13 @@
 %hook BBLiveVerticalCenterBar
 
 // 顶部吊坠
-- (void)layoutTopPendantContainerView {
-    [self.topPendantContainerView removeFromSuperview];
-    self.topPendantContainerView = nil;
-}
+// 【已停用】原实现会在每次 layout 后把整个吊坠容器从视图树移除并置空，
+// 导致返回键 / UP主头像 / 在线人数等一起消失。注释掉即恢复原样。
+// 需要恢复拦截时，取消下面方法的注释即可。
+// - (void)layoutTopPendantContainerView {
+//     [self.topPendantContainerView removeFromSuperview];
+//     self.topPendantContainerView = nil;
+// }
 
 // 弹幕下面的购物推荐卡
 - (void)_showShoppingRecommendViewWithInfo:(id)info completion:(id)completion {
