@@ -1,0 +1,21 @@
+name: diag
+on:
+  workflow_dispatch:
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: probe
+        run: |
+          echo "ubuntu runner ok"
+          uname -a
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - name: probe
+        run: |
+          echo "macos runner ok"
+          sw_vers
+          uname -m
