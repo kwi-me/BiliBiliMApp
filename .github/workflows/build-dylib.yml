@@ -28,9 +28,12 @@ jobs:
 
       - name: Install theos
         run: |
-          sudo git clone --recursive --depth 1 https://github.com/theos/theos.git /opt/theos
-          sudo chown -R "$USER":staff /opt/theos
-          ls /opt/theos/vendor/include | head
+          # md 脚本硬编码查找 $HOME/theos/bin/logos.pl，
+          # 项目 build setting 又要求 /opt/theos，因此装一份 + 软链
+          git clone --recursive --depth 1 https://github.com/theos/theos.git "$HOME/theos"
+          sudo ln -sfn "$HOME/theos" /opt/theos
+          ls -l "$HOME/theos/bin/logos.pl"
+          ls /opt/theos/vendor/include | head -3
 
       - name: Install MonkeyDev
         run: |
