@@ -43,6 +43,18 @@ jobs:
           sudo chmod -R +x /opt/MonkeyDev/bin /opt/MonkeyDev/Tools || true
           file /opt/MonkeyDev/bin/md || true
 
+      # 仓库里 Frameworks/ 只有 .gitkeep，libsubstrate.dylib 属于发布包未入库，
+      # 用 theos 自带的 CydiaSubstrate 二进制补齐
+      - name: Provide libsubstrate
+        run: |
+          FW=/opt/theos/vendor/lib/CydiaSubstrate.framework
+          ls -l "$FW" || true
+          SRC=$(find "$FW" -maxdepth 1 -type f ! -name "Info.plist" ! -name "*.plist" | head -1)
+          echo "src=$SRC"
+          sudo mkdir -p /opt/MonkeyDev/Frameworks
+          sudo cp "$SRC" /opt/MonkeyDev/Frameworks/libsubstrate.dylib
+          file /opt/MonkeyDev/Frameworks/libsubstrate.dylib
+
       - name: Build Dylib
         env:
           THEOS: /opt/theos
@@ -53,6 +65,7 @@ jobs:
             -configuration Release \
             SYMROOT="$PWD/out" \
             CONFIGURATION_BUILD_DIR="$PWD/out" \
+            INSTALL_PATH="@executable_path/Frameworks" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
