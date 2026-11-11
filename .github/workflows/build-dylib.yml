@@ -71,6 +71,20 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             build 2>&1 | tee build.log
 
+      # 编出来的 dylib 无 LC_CODE_SIGNATURE，iOS 上 dyld 会拒绝加载；
+      # ad-hoc 签名（-）不需要证书，TrollStore 环境足够
+      - name: Ad-hoc sign
+        run: |
+          BIN=out/libBiliBiliMDDylib.dylib
+          codesign --force --sign - --timestamp=none "$BIN"
+          echo "=== 签名信息 ==="
+          codesign -dv --verbose=4 "$BIN" 2>&1 | head -12
+          echo "=== 校验 ==="
+          codesign --verify --verbose=2 "$BIN" && echo "verify OK"
+          echo "=== 架构与 install name ==="
+          lipo -info "$BIN" || true
+          otool -D "$BIN"
+
       - name: Upload Artifact
         if: always()
         uses: actions/upload-artifact@v4
