@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		635381E712EBE2B5AAC401CB /* NJSubstrateCompat.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D572B16AB0774913195CEFC /* NJSubstrateCompat.m */; };
 		BF09B2632E4DDEE000160C03 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF09B2622E4DDEE000160C03 /* Security.framework */; };
 		BF09B2652E4DDEF500160C03 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BF09B2642E4DDEF500160C03 /* libiconv.tbd */; };
 		BF09B2672E4DDF0A00160C03 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BF09B2662E4DDF0A00160C03 /* libz.tbd */; };
@@ -399,6 +400,7 @@
 		BF0D03582DEDA95900115365 /* AntiAntiDebug.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AntiAntiDebug.m; sourceTree = "<group>"; };
 		BF0D035F2DEDA95900115365 /* BiliBiliMDDylib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BiliBiliMDDylib.h; sourceTree = "<group>"; };
 		BF0D03612DEDA95900115365 /* BiliBiliMDDylib.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BiliBiliMDDylib.m; sourceTree = "<group>"; };
+		0D572B16AB0774913195CEFC /* NJSubstrateCompat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NJSubstrateCompat.m; path = BiliBiliMDDylib/Logos/Tool/NJSubstrateCompat.m; sourceTree = SOURCE_ROOT; };
 		BF9A71312F9469AB008EB74C /* NSBundle+NJBundleCategory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSBundle+NJBundleCategory.h"; sourceTree = "<group>"; };
 		BF9A71322F9469AB008EB74C /* NSBundle+NJBundleCategory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+NJBundleCategory.m"; sourceTree = "<group>"; };
 		BF9A71332F9469AB008EB74C /* NSBundle+NJImageLoading.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSBundle+NJImageLoading.h"; sourceTree = "<group>"; };
@@ -1943,6 +1945,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF0D03622DEDA95900115365 /* BiliBiliMDDylib.m in Sources */,
+				635381E712EBE2B5AAC401CB /* NJSubstrateCompat.m in Sources */,
 				BF0D03332DEDA95900115365 /* MDCycriptManager.m in Sources */,
 				BF0D033C2DEDA95900115365 /* a1a2-selectortramps-arm64.s in Sources */,
 				BF0D033A2DEDA95900115365 /* a1a2-selectortramps-arm.s in Sources */,
