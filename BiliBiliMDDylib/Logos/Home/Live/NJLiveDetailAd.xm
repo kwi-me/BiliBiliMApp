@@ -270,6 +270,10 @@
 //
 // 若以后只想放开其中某一项，把对应 %hook 移出 App 组（或新建一个组单独 %init）即可。
 %ctor {
+    // 必须存在一个非空的构造函数，否则 Logos 会报
+    // "Cannot generate an autoconstructor with multiple %groups"。
+    // 这里刻意不调用 %init(App)，App 组内的 20 个 %hook 全部不会注册。
+    (void)0;
 }
 
 
