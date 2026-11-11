@@ -32,6 +32,17 @@
 
 #define NJ_HIDDEN __attribute__((visibility("hidden")))
 
+#pragma mark - 诊断状态（供 NJProbe 读取）
+
+/// 0 = 尚未调用过，1 = 使用内置实现，2 = 转发给进程内真实 Substrate
+static int NJ_gMode = 0;
+static int NJ_gHookMessageCount = 0;
+static int NJ_gHookFunctionCount = 0;
+
+int NJSubstrateMode(void) { return NJ_gMode; }
+int NJHookMessageCount(void) { return NJ_gHookMessageCount; }
+int NJHookFunctionCount(void) { return NJ_gHookFunctionCount; }
+
 #pragma mark - 内置实现：MSHookMessageEx
 
 static void NJHookMessageExImpl(Class cls, SEL sel, IMP replacement, IMP *original) {
@@ -175,13 +186,17 @@ void MSHookMessageEx(Class _class, SEL sel, IMP imp, IMP *result) {
     static NJHookMessageExFn realImpl = NULL;
     static BOOL resolved = NO;
 
+    NJ_gHookMessageCount++;
+
     if (!resolved) {
         resolved = YES;
         void *addr = NJLookUpRealSubstrate("MSHookMessageEx");
         if (addr && addr != (void *)&MSHookMessageEx) {
             realImpl = (NJHookMessageExFn)addr;
+            NJ_gMode = 2;
             NSLog(@"[NJ] 使用进程内已有的 Substrate 实现: %p", addr);
         } else {
+            NJ_gMode = 1;
             NSLog(@"[NJ] 未找到 Substrate，改用内置 MSHookMessageEx");
         }
     }
@@ -197,6 +212,8 @@ NJ_HIDDEN
 void MSHookFunction(void *symbol, void *replace, void **result) {
     static NJHookFunctionFn realImpl = NULL;
     static BOOL resolved = NO;
+
+    NJ_gHookFunctionCount++;
 
     if (!resolved) {
         resolved = YES;
