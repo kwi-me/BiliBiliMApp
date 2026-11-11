@@ -14,6 +14,7 @@
 #import <objc/runtime.h>
 #import <dlfcn.h>
 #import <unistd.h>
+#import "NJCommonDefine.h"
 
 /// 由 NJSubstrateCompat.m 提供
 extern int NJSubstrateMode(void);
@@ -48,6 +49,17 @@ static void NJProbeWriteLog(NSString *text) {
     NSLog(@"[NJ-PROBE] %@", text);
 }
 
+/// 读总开关的实际值：所有 hook 的 %ctor 都以它为门禁，
+/// 一旦为 NO，12 个功能会全部静默失效。
+static NSString *NJProbeMasterSwitchText(void) {
+    @try {
+        BOOL on = NJ_MASTER_SWITCH_VALUE;
+        return on ? @"开启" : @"已关闭 ← 这就是所有 hook 失效的原因";
+    } @catch (__unused NSException *e) {
+        return @"读取异常";
+    }
+}
+
 __attribute__((constructor))
 static void NJProbeInit(void) {
     NJProbeWriteLog([NSString stringWithFormat:@"dylib loaded, pid=%d, time=%@",
@@ -78,11 +90,13 @@ static void NJProbeInit(void) {
 
         NSString *message = [NSString stringWithFormat:
             @"B站版本：%@\n"
+            @"总开关：%@\n"
             @"方法 hook 注册：%d 次\n"
             @"函数 hook 注册：%d 次\n"
             @"hook 入口：%@\n"
             @"YYCache：%@",
             appVersion,
+            NJProbeMasterSwitchText(),
             NJHookMessageCount(),
             NJHookFunctionCount(),
             modeText,
